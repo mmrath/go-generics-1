@@ -1,10 +1,5 @@
 package validation
 
-type SchemaFn[T any] func(T) Schema
-type Schema []Validatable
-type SchemaI interface {
-	Schema() Schema
-}
 
 type ValidatableFunc func() (Error, error)
 
@@ -16,19 +11,6 @@ func (v ValidatableFunc) Validate() (Error, error) {
 	return v()
 }
 
-func (s Schema) Validate() (Errors, error) {
-	var errs Errors
-	for _, v := range s {
-		fe, err := v.Validate()
-		if err != nil {
-			return nil, err
-		}
-		if fe != nil {
-			errs = append(errs, fe)
-		}
-	}
-	return errs, nil
-}
 
 type FieldValidator[T any] struct {
 	rules      []ValidationRule[T]
